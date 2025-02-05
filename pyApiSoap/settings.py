@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-kom8*7glsurm#@#0$w+&vk8hv7$gp4kuqbifxezt*$_(o$2olf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', 'pyapisoap.onrender.com']
 
 CORS_ALLOW_ALL_ORIGINS = True
 
