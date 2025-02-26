@@ -4,11 +4,6 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from zeep import Client
 
-@api_view(['GET'])
-def api_status(request):
-    print('api_status')
-    return Response({"status": "API is running"}, status=status.HTTP_200_OK)
-
 def serialize(obj):
     if isinstance(obj, dict):
         return {key: serialize(value) for key, value in obj.items()}
@@ -86,11 +81,32 @@ def format_response(response):
         "TMCSColaboradores": colaboradores
     }
 
+def format_response_basic_sheet(response_dict):
+    data = response.get('__values__', {})
+
+    erroExecucao = data.get('erroExecucao', None)
+
+    numEmp = data.get('numEmp', '')
+
+    return {
+        "erroExecucao": erroExecucao,
+        "data": {
+            "numEmp": numEmp,
+            "numCad": numCad,
+        },
+    }
+
+@api_view(['GET'])
+def api_status(request):
+    return Response({"status": "API is running"}, status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 def receive_data(request):
     try:
         data = request.data
-        wsdl = "http://rubiweb.rpl.eng.br:8081/g5-senior-services/rubi_Synccom_senior_g5_rh_fp_consultarColaboradorPorCPF?wsdl"
+        p_version = data.get('version')
+        p_wsdl = data.get('wsdl')
+        wsdl = f"http://rubiweb.rpl.eng.br:8081/{p_version}/{p_wsdl}?wsdl"
         client = Client(wsdl=wsdl)
 
         method = data.get('method')
@@ -111,6 +127,43 @@ def receive_data(request):
         response_dict = serialize(response)
 
         mounted_response = format_response(response_dict)
+
+        return Response({"data": mounted_response}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['POST'])
+def send_basic_sheet(request):
+    try:
+        data = request.data
+        p_version = data.get('version')
+        p_wsdl = data.get('wsdl')
+        wsdl = f"http://rubiweb.rpl.eng.br:8081/{p_version}/{p_wsdl}?wsdl"
+        client = Client(wsdl=wsdl)
+
+        method = data.get('method')
+        body_params = data.get('params', {})
+        parameters = body_params.get('parameters', {})
+
+        params = {
+            "user": body_params.get('user'),
+            "password": body_params.get('password'),
+            "encryption": body_params.get('encryption'),
+            "parameters": {
+                "numEmp": params.get('numEmp'),
+                "tipOpe": parameters.get('tipOpe'),
+                "numCpf": parameters.get('numCpf'),
+                "nomFun": parameters.get('nomFun'),
+                "datNas": parameters.get('datNas'),
+            }
+        }
+
+        response = client.service[method](**params)
+
+        response_dict = serialize(response)
+
+        mounted_response = format_response_basic_sheet(response_dict)
 
         return Response({"data": mounted_response}, status=status.HTTP_200_OK)
 
