@@ -151,11 +151,11 @@ def send_basic_sheet(request):
             "password": body_params.get('password'),
             "encryption": body_params.get('encryption'),
             "parameters": {
-                "numEmp": params.get('numEmp'),
-                "tipOpe": parameters.get('tipOpe'),
-                "numCpf": parameters.get('numCpf'),
-                "nomFun": parameters.get('nomFun'),
-                "datNas": parameters.get('datNas'),
+                "numEmp": params.get('codigoEmpresa'),
+                "tipOpe": parameters.get('tipoOperacao'),
+                "numCpf": parameters.get('cpf'),
+                "nomFun": parameters.get('nome'),
+                "datNas": parameters.get('dataDeNascimento'),
             }
         }
 
