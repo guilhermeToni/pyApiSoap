@@ -5,5 +5,5 @@ urlpatterns = [
     path('', api_status, name='api_base'),
     path('status/', api_status, name='api_status'),
     path('data/', receive_data, name='receive_data'),
-    path('send', send_basic_sheet, name='send_basic_sheet'),
+    path('send/', send_basic_sheet, name='send_basic_sheet'),
 ]
