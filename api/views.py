@@ -1,4 +1,3 @@
-import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -81,12 +80,13 @@ def format_response(response):
         "TMCSColaboradores": colaboradores
     }
 
-def format_response_basic_sheet(response_dict):
+def format_response_basic_sheet(response):
     data = response.get('__values__', {})
 
     erroExecucao = data.get('erroExecucao', None)
 
     numEmp = data.get('numEmp', '')
+    numCad = data.get('numCad', '')
 
     return {
         "erroExecucao": erroExecucao,
@@ -98,100 +98,101 @@ def format_response_basic_sheet(response_dict):
 
 def generate_dynamic_object(parameters):
     mapping = {
-        "numEmp": "numEmp",
-        "datAdm": "datAdm",
-        "sitAfa": "sitAfa",
-        "codCar": "codCar",
-        "codEsc": "codEsc",
-        "codFil": "codFil",
-        "indAdm": "indAdm",
-        "numLoc": "numLoc",
-        "codEtb": "codEtb",
-        "numCtp": "numCtp",
-        "codFicFmd": "codFicFmd",
-        "pagSin": "pagSin",
-        "codFicFmd": "codFicFmd",
-        "escVtr": "escVtr",
-        "tipOpe": "tipOpe",
-        "codVinHvi": "codVinHvi",
-        "admeSo": "admeSo",
-        "iniEtbHeb": "iniEtbHeb",
-        "serCtp": "serCtp",
-        "depIrf": "depIrf",
-        "conRho": "conRho",
-        "numCad": "numCad",
-        "apuPonApu": "apuPonApu",
-        "codTmaHes": "codTmaHes",
-        "tipAdmHfi": "tipAdmHfi",
-        "conTovHlo": "conTovHlo",
-        "fimEtbHeb": "fimEtbHeb",
-        "conFinCcu": "conFinCcu",
-        "digCar": "digCar",
-        "depSaf": "depSaf",
-        "cadFol": "cadFol",
-        "fimEvt": "fimEvt",
-        "nomFun": "nomFun",
-        "artCltApu": "artCltApu",
-        "turInt": "turInt",
-        "conTovHfi": "conTovHfi",
-        "conTosHlo": "conTosHlo",
-        "dexCtp": "dexCtp",
-        "modPag": "modPag",
-        "verInt": "verInt",
-        "ponEmb": "ponEmb",
-        "codMotHsa": "codMotHsa",
-        "catAnt": "catAnt",
-        "locTraHlo": "locTraHlo",
-        "estCtp": "estCtp",
-        "tipCon": "tipCon",
-        "codSinHsi": "codSinHsi",
-        "tipSalHsa": "tipSalHsa",
-        "tInAnt": "tInAnt",
-        "natDesHna": "natDesHna",
-        "numCpf": "numCpf",
-        "busHor": "busHor",
-        "tipSex": "tipSex",
-        "socSinHsi": "socSinHsi",
-        "codEstHsa": "codEstHsa",
-        "numPis": "numPis",
-        "tpcPix": "tpcPix",
-        "tpCtBa": "tpCtBa",
-        "possBHHsi": "possBHHsi",
-        "claSalHsa": "claSalHsa",
-        "admAnt": "admAnt",
-        "dcdPis": "dcdPis",
-        "chvPix": "chvPix",
-        "conBan": "conBan",
-        "nivSalHsa": "nivSalHsa",
-        "matAnt": "matAnt",
-        "tipOpc": "tipOpc",
-        "datNas": "datNas",
-        "valSalHsa": "valSalHsa",
-        "onuSce": "onuSce",
-        "datOpc": "datOpc",
-        "perPag": "perPag",
-        "cplSalHsa": "cplSalHsa",
-        "resOnu": "resOnu",
-        "conFgt": "conFgt",
-        "tipApo": "tipApo",
-        "perJur": "perJur",
-        "movSef": "movSef",
-        "recAdi": "recAdi",
-        "rec13S": "rec13S",
-        "emiCar": "emiCar",
-        "codCha": "codCha",
-        "defFis": "defFis",
-        "benRea": "benRea",
-        "cotDef": "cotDef",
-        "racCor": "racCor",
-        "ratEve": "ratEve",
-        "catSef": "catSef",
-        "datInc": "datInc",
-        "horInc": "horInc",
+        "codigoEmpresa": "numEmp",
+        "dataAdmissao": "datAdm",
+        "codigoSituacao": "sitAfa",
+        "codigoCargo": "codCar",
+        "codigoEscala": "codEsc",
+        "codigoFilial": "codFil",
+        "indicativoAdmissao": "indAdm",
+        "codigoLocal": "numLoc",
+        "tipoEstabilidade": "codEtb",
+        "numCarteiraTrabalho": "numCtp",
+        "indicacaoRecolhimentoContribuicaoSindicato": "pagSin",
+        "geracaoFichaMedica": "codFicFmd",
+        "escalaValeTransporte": "escVtr",
+        "categoriaeSocial": "cateSo",
+        "tipoOperacao": "tipOpe",
+        "codigoVinculo": "codVinHvi",
+        "admissaoeSocial": "admeSo",
+        "serieCarteiraTrabalho": "serCtp",
+        "numeroCadastro": "numCad",
+        "tipoApuracao": "apuPonApu",
+        "codigoMotivoAlteracaoCargo": "codMotHca",
+        "codigoTurmaEscala": "codTmaHes",
+        "tipoAdmissaoFilial": "tipAdmHfi",
+        "turnOverEntrada": "conTovHlo",
+        "digitoVerificadorCarteiraTrabalho": "digCar",
+        "cadastroFolhaDePagamento": "cadFol",
+        "dataFinalEscalaValeTransporte": "fimEvt",
+        "nomeFuncionario": "nomFun",
+        "seguroDesemprego": "segDes",
+        "observacoesIniciaisEstabilidade": "obsIniHeb",
+        "dataExpedicaoCarteiraTrabalho": "dexCtp",
+        "modoPagamento": "modPag",
+        "codigoPontoEmbarque": "ponEmb",
+        "apelidoColaborador": "apeFun",
+        "codigoDefinicaoSituacao": "codDSiApu",
+        "dataTransferenciaOuEntradaFilial": "DatEntHfi",
+        "codigoMotivoAlteracao": "codMotHsa",
+        "categoriaeSocialOrigem": "catAnt",
+        "localTrabalhoRais": "locTraHlo",
+        "observacoesFinaisEstabilidade": "obsFimHeb",
+        "ufCarteiraTrabalho": "estCtp",
+        "tipoContrato": "tipCon",
+        "codigoSindicato": "codSinHsi",
+        "tipoSalarioColaborador": "tipSalHsa",
+        "tipoInscricaoEmpregadorAnterior": "tInAnt",
+        "cpfColaborador": "numCpf",
+        "sexoColaborador": "tipSex",
+        "sindicalizado": "socSinHsi",
+        "codigoEstruturaCargo": "codEstHsa",
+        "cnpjOrigem": "cnpjAn",
+        "numeroPis": "numPis",
+        "tipoChavePix": "tpcPix",
+        "assinalamentoParaPPR": "assPpr",
+        "estadoCivil": "estCiv",
+        "possuiBancoHoras": "possBHHsi",
+        "classeSalarial": "claSalHsa",
+        "dataAdmissaoOrigem": "admAnt",
+        "dataCadastroPisPasep": "dcdPis",
+        "chavePix": "chvPix",
+        "contaBancaria": "conBan",
+        "grauDeInstrucao": "graIns",
+        "nivelSalarial": "nivSalHsa",
+        "matriculaOrigem": "matAnt",
+        "optanteFGTS": "tipOpc",
+        "digBan": "digBan",
+        "dataNascimento": "datNas",
+        "valorSalario": "valSalHsa",
+        "dataOpcaoFGTS": "datOpc",
+        "periodoPagamento": "perPag",
+        "complementoSalario": "cplSalHsa",
+        "ressarcimentoOnus": "resOnu",
+        "numeroContaFGTS": "conFgt",
+        "tipoAposentadoria": "tipApo",
+        "codigoNacionalidade": "codNac",
+        "percentualJurosFGTS": "perJur",
+        "codigoMovimentacaoSefip": "movSef",
+        "recebeAdiantamentoSalarial": "recAdi",
+        "recebe13Salario": "rec13S",
+        "constaRais": "lisRai",
+        "numeroCartaoPontoQuadroChapeira": "codCha",
+        "manCgcAfao": "manCgcAfa",
+        "pessoaComDeficiencia": "defFis",
+        "manRemAfao": "manRemAfa",
+        "colaboradorReabilitado": "benRea",
+        "cotaPessoaDeficiencia": "cotDef",
+        "codigoRacaEtnia": "racCor",
+        "categoriaSEFIP": "catSef",
+        "dataInclusao": "datInc",
+        "horaInclusao": "horInc",
     }
 
     return {
-        mapping.get(key, key): value for key, value in parameters.items() if value not in [None, "", []]
+        mapping.get(key): value
+        for key, value in parameters.items()
+        if key in mapping and value not in [None, "", []]
     }
 
 @api_view(['GET'])
@@ -243,6 +244,7 @@ def send_basic_sheet(request):
         method = data.get('method')
         body_params = data.get('params', {})
         parameters = body_params.get('parameters', {})
+
         treatedParameters = generate_dynamic_object(parameters)
 
         params = {
@@ -255,11 +257,10 @@ def send_basic_sheet(request):
         response = client.service[method](**params)
 
         response_dict = serialize(response)
-        print(f"response: {response_dict}")
 
-        # mounted_response = format_response_basic_sheet(response_dict)
+        mounted_response = format_response_basic_sheet(response_dict)
 
-        return Response({"data": response_dict}, status=status.HTTP_200_OK)
+        return Response({"data": mounted_response}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(f"err: {e}")
